@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:blur/blur.dart';
 import 'package:ex0205/screen/homeScreen.dart';
 import 'package:ex0205/screen/likeScreen.dart';
+import 'package:ex0205/screen/loginScreen.dart';
 import 'package:ex0205/screen/profileScreen.dart';
 import 'package:ex0205/screen/subscribeScreen.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class MyApp extends StatelessWidget {
             },
             theme: ThemeData(
               primaryColor: Color(0xff000000),
-              accentColor: Color(0xfff1a09d),
+              accentColor: Color(0xffF25520),
               textTheme: TextTheme(
                 //To support the following, you need to use the first initialization method
                   bodyText1: TextStyle(
@@ -55,7 +56,7 @@ class MyApp extends StatelessWidget {
                   ),
               ),
             ),
-            home: MyHomePage(),
+            home: LoginScreen(),
             debugShowCheckedModeBanner: false,
           ),
     );

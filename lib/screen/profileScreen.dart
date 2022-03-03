@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:ex0205/screen/imageFullScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_braintree/flutter_braintree.dart';
@@ -9,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class ProfileScreen extends StatefulWidget{
+
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
@@ -30,7 +29,7 @@ var url = 'https://us-central1-project-1448894476953307608.cloudfunctions.net/pa
           child: Text('Pay'),
           onPressed: () async {
             var request = BraintreeDropInRequest(
-              tokenizationKey: 'sandbox_24j893xd_69gmvkphhfxpf5jg',
+              tokenizationKey: 'sandbox_zjtjy28c_69gmvkphhfxpf5jg',
               collectDeviceData: true,
               paypalRequest: BraintreePayPalRequest(
                 amount: '1.00',
