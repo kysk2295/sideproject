@@ -1,8 +1,14 @@
+import 'dart:convert';
+
+import 'package:ex0205/model/user.dart';
+import 'package:ex0205/screen/loginScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:searchfield/searchfield.dart';
+import 'package:http/http.dart' as http;
+
 
 class AccountScreen extends StatefulWidget{
   @override
@@ -20,9 +26,8 @@ class _AccountScreenState extends State<AccountScreen> {
   ,'JP모간','BNP파리바','씨티','제주','KDB산업','SBI저축은행','산림조합','BOA','HSBC','중국'
   ,'도이치','중국건설'];
 
-
-
   String? _bankName;
+  final _nameEditController = TextEditingController();
 
   @override
   void dispose() {
@@ -47,7 +52,9 @@ class _AccountScreenState extends State<AccountScreen> {
           child: Text("Sign up", style: TextStyle( fontSize: 20.sp)),
           color: Theme.of(context).accentColor,
           borderRadius: BorderRadius.circular(5),
-          onPressed: (){}
+          onPressed: (){
+            createUser(_nameEditController.text.trim(), _bankName);
+          }
 
       ),
     );
@@ -175,6 +182,7 @@ class _AccountScreenState extends State<AccountScreen> {
                       ),
                       minLines: 1,
                       keyboardType: TextInputType.number,
+                      controller: _nameEditController,
 
                     ),
                   ),
@@ -209,4 +217,34 @@ class _AccountScreenState extends State<AccountScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
     );
   }
+}
+Future createUser(String? account, String? bankName) async {
+  var res = await http.post(
+    Uri.parse('http://192.168.45.52:3000/register'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String?>{
+      'name': (Get.arguments as User).name,
+      'email':(Get.arguments as User).email,
+      'password':(Get.arguments as User).password,
+      'account':account,
+      'bankType':bankName,
+    }),
+  );
+
+  if(res.statusCode ==302) {
+    print("회원가입 success");
+    Get.snackbar('회원가입', '회원가입이 성공적으로 완료되었습니다!');
+    Get.off(LoginScreen());
+  }
+
+  else {
+    print("fail to connect server");
+    Get.snackbar('회원가입', '이메일이 중복되었습니다!');
+
+  }
+
+
+  print(res.body);
 }

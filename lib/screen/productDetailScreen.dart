@@ -276,9 +276,9 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
             SizedBox(height: 25.h,),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 8.w),
-                child: productGridview())
+            // Container(
+            //   margin: EdgeInsets.symmetric(horizontal: 8.w),
+            //     child: productGridview())
 
           ],
         ),

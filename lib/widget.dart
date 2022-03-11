@@ -7,11 +7,15 @@ import 'package:get/get.dart';
 
 class productGridview extends StatelessWidget{
 
+  final List<dynamic> data;
+  productGridview( {required this.data});
+
   @override
   Widget build(BuildContext context) {
+
     // TODO: implement build
     return GridView.builder(
-    itemCount: 8,
+    itemCount: data.length,
     padding: EdgeInsets.symmetric(horizontal: 10.w),
     shrinkWrap: true,
     scrollDirection: Axis.vertical,
@@ -29,7 +33,8 @@ class productGridview extends StatelessWidget{
     children: [
     InkWell(
     onTap: (){
-    Get.to(ProductDetailScreen());
+    Get.to(ProductDetailScreen(
+    ));
     },
     child: Container(
     width: 199.w,
@@ -39,7 +44,7 @@ class productGridview extends StatelessWidget{
     ),
     child: GridTile(
     child: Container(
-
+      child: Image.network(data[index]['thumbnailUrl'], fit: BoxFit.cover,),
     ),
     footer: GridTileBar(
     leading: Container(margin: EdgeInsets.only(top: 10.h),child: Image.asset('assets/images/like.png', width: 20.w, height: 20.h, )),
@@ -52,7 +57,7 @@ class productGridview extends StatelessWidget{
     Padding(
     padding: EdgeInsets.only(left: 10.w)
     ,child: Text(
-    "Product Name",
+    data[index]['productName'],
     style: TextStyle(
     color:  const Color(0xffffffff),
     fontWeight: FontWeight.w300,

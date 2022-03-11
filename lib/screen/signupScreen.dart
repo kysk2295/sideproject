@@ -1,3 +1,4 @@
+import 'package:ex0205/model/user.dart';
 import 'package:ex0205/screen/accountScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +20,32 @@ class _SignUpScreenState extends State<SignupScreen>{
   final _idTextEditController = TextEditingController();
   final _passwordEditController = TextEditingController();
   final _nameEditController = TextEditingController();
+  late User user;
 
+  var _flag=false;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    setState(() {
+      if(_nameEditController.text.isNotEmpty && _idTextEditController.text.isNotEmpty && _passwordEditController.text.isNotEmpty ){
+        if(_idTextEditController.text.toString().trim().length>=6 && _passwordEditController.text.toString().trim().length>=6) {
+          user = User(name:
+              _nameEditController.text.trim(),
+              email: _idTextEditController.text.trim(),
+              password: _passwordEditController.text.trim(),
+              bankType: '', account: '');
+          _flag=true;
+        }
+        else {
+          _flag=false;
+        }
+      }
+      else {
+        _flag=false;
+      }
+    });
+
 
     var _nameTextField = Container(
       height: 65.h,
@@ -98,17 +120,13 @@ class _SignUpScreenState extends State<SignupScreen>{
     var _loginButton = SizedBox(
       child: CupertinoButton(
           child: Text("Next", style: TextStyle( fontSize: 20.sp)),
-          color: Theme.of(context).accentColor,
+          color: _flag ? Theme.of(context).accentColor:Color(0xffcccccc),
           borderRadius: BorderRadius.circular(5),
-          onPressed: (){
+          onPressed: _flag ? (){
 
-            if(_idTextEditController.text.isNotEmpty && _passwordEditController.text.isNotEmpty)
-            {
-              //loginUser(_idTextEditController.text,_passwordEditController.text);
-            }
-            Get.to(AccountScreen());
-          }
+            Get.to(AccountScreen(), arguments: user);
 
+          }:null
       ),
     );
     return Scaffold(

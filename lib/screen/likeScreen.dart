@@ -87,8 +87,8 @@ class _LikeScreenState extends State<LikeScreen>  with SingleTickerProviderState
 body:  Expanded(child: TabBarView(
   controller: _tabController,
   children: [
-    productGridview(),
-    productGridview(),
+    // productGridview(),
+    // productGridview(),
 
   ],
 )),

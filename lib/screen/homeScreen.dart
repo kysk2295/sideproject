@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:blur/blur.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget{
   @override
@@ -42,6 +44,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _editingController = TextEditingController(text: 'SEARCH');
     value = false;
     widthVlaue = 20.w;
+    data = loadData();
 
   }
   void setRotation(int degrees) {
@@ -56,6 +59,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     _editingController.dispose();
     super.dispose();
   }
+
+  late Future<List<dynamic>> data;
 
   @override
   Widget build(BuildContext context) {
@@ -242,14 +247,77 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             child: ( controller.selected || controller.searchselected) ? Blur(
               blur: 20,
               blurColor: Theme.of(context).primaryColor,
-              child: productGridview()
-            ) : productGridview()
+              child: FutureBuilder(
+                future: data,
+                  builder: (context,AsyncSnapshot<List<dynamic>> snapshot){
+
+                  if(snapshot.connectionState == ConnectionState.done)
+                    {
+                      print("1");
+                      if(snapshot.hasData)
+                        {
+                          print("1");
+                          return productGridview(data: snapshot.data??[]);
+                        }
+                      else
+                        {
+                          print("2");
+                          return CircularProgressIndicator();
+                        }
+                    }else
+                      {
+                        print("3");
+                        return CircularProgressIndicator();
+                      }
+                  },
+                  )
+            ) : FutureBuilder(
+              future: data,
+              builder: (context,AsyncSnapshot<List<dynamic>> snapshot){
+
+                if(snapshot.connectionState == ConnectionState.done)
+                {
+                  print("1");
+                  if(snapshot.hasData)
+                  {
+                    print("1");
+                    return productGridview(data: snapshot.data??[]);
+                  }
+                  else
+                  {
+                    print("2");
+                    return CircularProgressIndicator();
+                  }
+                }else
+                {
+                  print("3");
+                  return CircularProgressIndicator();
+                }
+              },
+            )
           ),
         ],
 
       ),
     );
+
   }
+
+  Future<List<dynamic>> loadData() async{
+
+      var res = await http.post(
+        Uri.parse('http://192.168.45.52:3000/home'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      ).catchError((error){
+        print(error);
+      });
+      print(json.decode(res.body));
+
+      return json.decode(res.body);
+  }
+
 
 
 
