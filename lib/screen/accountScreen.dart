@@ -132,7 +132,7 @@ class _AccountScreenState extends State<AccountScreen> {
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)
                         ),
-                        onTap: (value){
+                        onSuggestionTap: (value){
                           setState(() {
                             _bankName=value.item.toString();
 

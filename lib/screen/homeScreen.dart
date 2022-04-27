@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:blur/blur.dart';
-import 'package:ex0205/bottomBlurController.dart';
-import 'package:ex0205/widget.dart';
+import 'package:ex0205/controller/bottomBlurController.dart';
+import 'package:ex0205/widget/widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'productRegisterScreen.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -332,7 +333,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       }
     else {
       return  FloatingActionButton(backgroundColor: Theme.of(context).accentColor,
-          onPressed: () {  },
+          onPressed: () {
+            Get.to(ProductRegisterScreen());
+          },
           child: Icon(Icons.add, color: Colors.white,));
     }
   }

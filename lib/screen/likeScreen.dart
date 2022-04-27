@@ -1,11 +1,11 @@
 import 'package:blur/blur.dart';
-import 'package:ex0205/widget.dart';
+import 'package:ex0205/widget/widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-import '../bottomBlurController.dart';
+import '../controller/bottomBlurController.dart';
 
 class LikeScreen extends StatefulWidget{
   @override

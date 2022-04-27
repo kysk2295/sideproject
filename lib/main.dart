@@ -13,7 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'bottomBlurController.dart';
+import 'controller/bottomBlurController.dart';
 import 'package:http/http.dart' as http;
 
 
@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
       designSize: Size(428,926),
       minTextAdapt: true,
       splitScreenMode: true,
-      builder: () =>
+      builder: (BuildContext context) =>
           GetMaterialApp(
             //... other code
             builder: (context, widget) {
