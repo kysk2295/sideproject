@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 class BottomBlurController extends GetxController{
   bool selected = false;
   bool searchselected = false;
+  bool desc_selected = false;
 
 
   changeState(){
@@ -12,6 +13,10 @@ class BottomBlurController extends GetxController{
   }
   changeState2(){
     searchselected=!searchselected;
+    update();
+  }
+  changeState3(){
+    desc_selected = !desc_selected;
     update();
   }
   changeNothing() {

@@ -184,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future loginUser(String id, String password) async{
 
     var res = await http.post(
-      Uri.parse('http://192.168.45.52:3000/login'),
+      Uri.parse('http://192.168.45.16:3000/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

@@ -1,13 +1,18 @@
 
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:chips_choice/chips_choice.dart';
+import 'package:ex0205/model/product.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 import '../library/flutter_chip_tags.dart';
 
 class ProductRegisterScreen extends StatefulWidget{
@@ -21,9 +26,6 @@ class ProductRegisterScreen extends StatefulWidget{
 
 class _ProductRegisterScreenState extends State<ProductRegisterScreen> {
 
-  List<String> tagsList = ['apple', 'banana', 'orange', 'kiwi', ''];
-  List<String> selectedTags = [];
-
   List<String> _myList =[];
   int tag = 1;
 
@@ -36,6 +38,8 @@ class _ProductRegisterScreenState extends State<ProductRegisterScreen> {
     'Automotive', 'Sports', 'Education',
     'Fashion', 'Travel', 'Food', 'Tech',
   ];
+
+  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
 
   final ImagePicker imgpicker = ImagePicker();
   List<XFile>? imagefiles=[];
@@ -72,7 +76,9 @@ class _ProductRegisterScreenState extends State<ProductRegisterScreen> {
               //모든 항목이 채워져 있을 때
               if(_titleController.text.isNotEmpty && _descController.text.isNotEmpty && _glbController.text.isNotEmpty &&_priceController.text.isNotEmpty)
                 {
-
+                    final Product product = Product(title: _titleController.text, desc: _descController.text, link: _glbController.text, price: _priceController.text,
+                        category: options[tag], tags: _myList);
+                    registerProduct(product,imagefiles);
                 }
               else {
                 if(_titleController.text.isEmpty)
@@ -104,6 +110,7 @@ class _ProductRegisterScreenState extends State<ProductRegisterScreen> {
                         //you can use ImageCourse.camera for Camera capture
                         if(pickedfiles != null){
                           imagefiles = pickedfiles;
+
                           setState(() {
                           });
                         }else{
@@ -410,12 +417,65 @@ class _ProductRegisterScreenState extends State<ProductRegisterScreen> {
     super.initState();
 
   }
+
+  Future registerProduct(Product product, List<XFile>? images) async {
+    final prefs = await SharedPreferences.getInstance();
+
+    List<String> urlList =[];
+    int i =0;
+    print(images!.length);
+    await Future.forEach(images, (XFile element) async {
+
+      Reference reference = FirebaseStorage.instance
+      .ref().child('user/${prefs.getStringList('info')![0]}/${product.title}/${product.title}$i');
+      final UploadTask uploadTask = reference.putFile(File(element.path));
+      final TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => {});
+      final url = await taskSnapshot.ref.getDownloadURL();
+      urlList.add(url);
+      i++;
+      print('asdf');
+
+
+      // final ref = _firebaseStorage.ref().child('user/${prefs.getStringList('info')![0]}/${product.title}/${product.title}$i');
+      // await ref.putFile(File(element.path)).whenComplete(() async {
+      //   String downloadURL = await ref.getDownloadURL();
+      //   setState(() {
+      //     urlList.add(downloadURL);
+      //     i++;
+      //     print('hi+$i');
+      //   });
+      // });
+    });
+
+    final pref = await SharedPreferences.getInstance();
+    var res = await http.post(
+      Uri.parse('http://192.168.45.16:3000/upload'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'artistName':pref.getString('name'),
+        'productName':product.title,
+        'link':product.link,
+        'desc':product.desc,
+        'price':product.price,
+        'category':product.category,
+        'tags':product.tags,
+        'imgUrl':urlList
+      }),
+    );
+
+    if(res.statusCode == 302) {
+      print('상품 등록 성공 ');
+      Get.snackbar('상품등록', '상품등록이 완료되었습니다!');
+    }
+
+    else {
+      print('상품 등록 실패');
+      Get.snackbar('상품등록', '상품등록 실패!');
+    }
+
+
+  }
 }
-// final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
-// // Allows you to get a list of all the ItemTags
-// _getAllItem(){
-//   List<Item>? lst = _tagStateKey.currentState?.getAllItem;
-//   if(lst!=null)
-//     lst.where((a) => a.active==true).forEach( ( a) => print(a.title));
-// }
 

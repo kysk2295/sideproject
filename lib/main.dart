@@ -7,6 +7,7 @@ import 'package:ex0205/screen/likeScreen.dart';
 import 'package:ex0205/screen/loginScreen.dart';
 import 'package:ex0205/screen/profileScreen.dart';
 import 'package:ex0205/screen/subscribeScreen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,12 +16,12 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'controller/bottomBlurController.dart';
 import 'package:http/http.dart' as http;
-
-
-void main() {
+void main() async {
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
   ));
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -239,7 +240,7 @@ Future<String> _autoLogin() async{
   if(prefs.getStringList('info')!.isNotEmpty){
     print('hi');
     var res = await http.post(
-      Uri.parse('http://192.168.45.52:3000/login'),
+      Uri.parse('http://192.168.45.16:3000/login'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

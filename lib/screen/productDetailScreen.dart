@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:blur/blur.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -7,7 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
+import 'package:http/http.dart' as http;
 import 'imageFullScreen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
@@ -39,12 +41,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   bool toggle = false;
   late List<Widget> imageSliders;
   late List<String> imgList;
+  late Future<List<dynamic>> data;
 
   @override
   void initState() {
 
     setState(() {
-
+      data = loadData();
       //dynamic을  string으로 형변환
       imgList = widget.data['imgUrl'].join().split(",");
       print(imgList);
@@ -57,7 +60,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       )).toList();
     });
 
+
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +78,17 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             Container(
               margin: EdgeInsets.fromLTRB(0.w, 40.h, 0, 0),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   IconButton(onPressed: (){
                     Get.back();
-                  }, icon: Image.asset('assets/images/back.png'),)
+                  }, icon: Image.asset('assets/images/back.png'),),
+                  IconButton(onPressed: (){
+                    Get.back();
+                  }, icon: Image.asset('assets/images/bag.png'),
+                    padding: EdgeInsets.all(15),
+                    iconSize: 20,
+                  )
                 ],
               ),
             ),
@@ -225,27 +238,27 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
             SizedBox(height: 10.h,),
-
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 50.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // Title3
-                  Text(
-                      "Released to",
-                      style: TextStyle(
-                          color:  const Color(0xffffffff),
-                          fontWeight: FontWeight.w200,
-                          fontFamily: "Sarabun",
-                          fontStyle:  FontStyle.normal,
-                          fontSize: 14.sp
-                      ),
-                      textAlign: TextAlign.left
-                  )
-                ],
-              ),
-            ),
+            //
+            // Container(
+            //   margin: EdgeInsets.symmetric(horizontal: 50.w),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     children: [
+            //       // Title3
+            //       Text(
+            //           "Released to",
+            //           style: TextStyle(
+            //               color:  const Color(0xffffffff),
+            //               fontWeight: FontWeight.w200,
+            //               fontFamily: "Sarabun",
+            //               fontStyle:  FontStyle.normal,
+            //               fontSize: 14.sp
+            //           ),
+            //           textAlign: TextAlign.left
+            //       )
+            //     ],
+            //   ),
+            // ),
 
             Container(
               margin: EdgeInsets.symmetric(horizontal: 50.w),
@@ -254,13 +267,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 children: [
                   // Title3
                   Text(
-                      "87 %",
+                      "\$ 100",
                       style:  TextStyle(
                           color:  const Color(0xffffffff),
-                          fontWeight: FontWeight.w200,
+                          fontWeight: FontWeight.w300,
                           fontFamily: "Sarabun",
                           fontStyle:  FontStyle.normal,
-                          fontSize: 44.sp
+                          fontSize: 24.sp
                       ),
                       textAlign: TextAlign.left
                   ),
@@ -271,21 +284,21 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             TextSpan(
                                 style:  TextStyle(
                                     color:  const Color(0xfff1a09d),
-                                    fontWeight: FontWeight.w200,
+                                    fontWeight: FontWeight.w300,
                                     fontFamily: "Sarabun",
                                     fontStyle:  FontStyle.normal,
-                                    fontSize: 21.sp
+                                    fontSize: 16.sp
                                 ),
-                                text: "44589 "),
+                                text: "48 "),
                             TextSpan(
                                 style:  TextStyle(
                                     color:  const Color(0xffffffff),
                                     fontWeight: FontWeight.w200,
                                     fontFamily: "Sarabun",
                                     fontStyle:  FontStyle.normal,
-                                    fontSize: 21.sp
+                                    fontSize: 12.sp
                                 ),
-                                text: "/ 50000")
+                                text: "Likes")
                           ]
                       )
                   )
@@ -294,14 +307,104 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               ),
             ),
             SizedBox(height: 25.h,),
+
             // Container(
-            //   margin: EdgeInsets.symmetric(horizontal: 8.w),
-            //     child: productGridview())
+            //   margin: EdgeInsets.symmetric(horizontal: 50.w),
+            //
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.start,
+            //     children: [
+            //       Container(
+            //         decoration: BoxDecoration(
+            //             border: Border(bottom: BorderSide(color:Colors.white, width: 1.0)),
+            //         ),
+            //         padding: EdgeInsets.only(bottom: 5)
+            //        , child: Text(
+            //             "인물",
+            //             style:  TextStyle(
+            //                 color:  const Color(0xffffffff),
+            //                 fontWeight: FontWeight.w300,
+            //                 fontFamily: "Noto Sans KR",
+            //                 fontStyle:  FontStyle.normal,
+            //                 fontSize: 16.sp,
+            //               decoration: TextDecoration.underline,
+            //               decorationColor: Colors.white,
+            //               decorationThickness: 3
+            //
+            //             ),
+            //             textAlign: TextAlign.left
+            //         ),
+            //       ),
+            //
+            //     ],
+            //   ),
+            // ),
+            // SizedBox(height: 10.h,),
+            //
+            // Wrap(
+            //   children: List.generate(3, (index) => Text(
+            //       "#태그$index ",
+            //       style:  TextStyle(
+            //           color: Colors.grey,
+            //           fontWeight: FontWeight.w300,
+            //           fontFamily: "Noto Sans KR",
+            //           fontStyle:  FontStyle.normal,
+            //           fontSize: 18.sp,
+            //
+            //       ),
+            //       textAlign: TextAlign.left
+            //   ),),
+            //   direction: Axis.horizontal,
+            //   alignment: WrapAlignment.start,
+            // )
+
+
+
+            FutureBuilder(
+
+              future: data,
+              builder: (context,AsyncSnapshot<List<dynamic>> snapshot){
+
+                if(snapshot.connectionState == ConnectionState.done)
+                {
+                  print("1");
+                  if(snapshot.hasData)
+                  {
+                    print("1");
+                    return productGridview(data: snapshot.data??[],paddingdata: 20.w,);
+                  }
+                  else
+                  {
+                    print("2");
+                    return CircularProgressIndicator();
+                  }
+                }else
+                {
+                  print("3");
+                  return CircularProgressIndicator();
+                }
+              },
+            )
 
           ],
         ),
       ),
       backgroundColor: Theme.of(context).primaryColor,
     );
+  }
+
+  Future<List<dynamic>> loadData() async{
+
+    var res = await http.post(
+      Uri.parse('http://192.168.45.16:3000/home'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    ).catchError((error){
+      print(error);
+    });
+    print(json.decode(res.body));
+
+    return json.decode(res.body);
   }
 }

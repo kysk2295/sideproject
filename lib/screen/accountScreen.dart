@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:searchfield/searchfield.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class AccountScreen extends StatefulWidget{
@@ -196,11 +197,6 @@ class _AccountScreenState extends State<AccountScreen> {
                 ],
               )
 
-
-
-
-
-
     ],
           ),
         ),
@@ -220,7 +216,7 @@ class _AccountScreenState extends State<AccountScreen> {
 }
 Future createUser(String? account, String? bankName) async {
   var res = await http.post(
-    Uri.parse('http://192.168.45.52:3000/register'),
+    Uri.parse('http://192.168.45.16:3000/register'),
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },
@@ -235,6 +231,8 @@ Future createUser(String? account, String? bankName) async {
 
   if(res.statusCode ==302) {
     print("회원가입 success");
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('name',(Get.arguments as User).name);
     Get.snackbar('회원가입', '회원가입이 성공적으로 완료되었습니다!');
     Get.off(LoginScreen());
   }

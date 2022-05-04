@@ -86,7 +86,7 @@ Future<String> _logout() async{
   print(prefs.getStringList('info')![0]);
   if(prefs.getStringList('info')!.isNotEmpty){
     var res = await http.post(
-      Uri.parse('http://192.168.45.52:3000/logout'),
+      Uri.parse('http://192.168.45.16:3000/logout'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

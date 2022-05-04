@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       if(snapshot.hasData)
                         {
                           print("1");
-                          return productGridview(data: snapshot.data??[]);
+                          return productGridview(data: snapshot.data??[], paddingdata: 10.w,);
                         }
                       else
                         {
@@ -282,7 +282,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   if(snapshot.hasData)
                   {
                     print("1");
-                    return productGridview(data: snapshot.data??[]);
+                    return productGridview(data: snapshot.data??[], paddingdata: 10.w,);
                   }
                   else
                   {

@@ -6,20 +6,22 @@ import 'package:get/get.dart';
 
 class productGridview extends StatelessWidget {
   final List<dynamic> data;
-  productGridview({required this.data});
+  var paddingdata;
+
+  productGridview({required this.data, required this.paddingdata});
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return GridView.builder(
         itemCount: data.length,
-        padding: EdgeInsets.symmetric(horizontal: 10.w),
+        padding: EdgeInsets.symmetric(horizontal: paddingdata ?? 10.w),
         shrinkWrap: true,
         scrollDirection: Axis.vertical,
         physics: ScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 189.w / 352.h,
+            childAspectRatio: 189.w / (paddingdata == 20.w ? 312.h : 352.h),
             mainAxisSpacing: 7.h,
             crossAxisSpacing: 10.w),
         itemBuilder: (_, index) {
@@ -33,7 +35,7 @@ class productGridview extends StatelessWidget {
                 },
                 child: Container(
                   width: 199.w,
-                  height: 302.h,
+                  height: paddingdata == 20.w ? 252.h : 302.h,
                   decoration: BoxDecoration(color: const Color(0xffb7b7b7)),
                   child: GridTile(
                     child: Container(
@@ -75,10 +77,10 @@ class productGridview extends StatelessWidget {
               ),
               Padding(
                 padding: EdgeInsets.only(left: 10.w),
-                child: Text("87 %",
+                child: Text("\$ 100",
                     style: TextStyle(
                         color: const Color(0xffd9d9d9),
-                        fontWeight: FontWeight.w400,
+                        fontWeight: FontWeight.w300,
                         fontFamily: "Sarabun",
                         fontStyle: FontStyle.normal,
                         fontSize: 15.sp),
